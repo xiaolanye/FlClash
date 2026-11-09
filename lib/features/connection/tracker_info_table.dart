@@ -193,11 +193,8 @@ class _ExitChip extends StatelessWidget {
     if (exit.isEmpty) {
       return const RecordCellText('');
     }
-    final colorScheme = context.colorScheme;
-    return TonalChip(
+    return TrackerProxyChip(
       label: exit,
-      color: context.raisedSurfaceLevel.colorOf(colorScheme),
-      foregroundColor: colorScheme.onSurfaceVariant,
       onPressed: () => RecordFilterScope.add(
         context,
         RecordFilter(RecordFacetKind.proxy, exit),
