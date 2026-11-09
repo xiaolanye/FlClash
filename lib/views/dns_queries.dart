@@ -277,6 +277,18 @@ List<RecordColumn<DnsQuery>> _dnsQueryColumns(
       sortKey: (query) => query.initiator?.label ?? '',
     ),
     RecordColumn(
+      TableColumn('egress', appLocalizations.interfaceNameMode, width: 100),
+      cell: (_, query) => RecordCellText(
+        query.cached
+            ? '—'
+            : query.egressInterface.isEmpty
+            ? appLocalizations.unknown
+            : query.egressInterface,
+        muted: true,
+      ),
+      sortKey: (query) => query.egressInterface.toLowerCase(),
+    ),
+    RecordColumn(
       TableColumn('result', appLocalizations.result, flex: 1),
       cell: (_, query) => _DnsResult(query),
       sortKey: (query) => query.summary.toLowerCase(),
@@ -414,6 +426,13 @@ class DnsQueryItem extends StatelessWidget {
                       ? RecordTone.error
                       : RecordTone.neutral,
                 ),
+              if (!dnsQuery.cached)
+                Text(
+                  dnsQuery.egressInterface.isEmpty
+                      ? context.appLocalizations.unknown
+                      : dnsQuery.egressInterface,
+                  style: styles.secondary,
+                ),
               if (dnsQuery.upstream.isNotEmpty)
                 Text(dnsQuery.upstream, style: styles.secondary),
             ],
@@ -437,6 +456,14 @@ class DnsQueryDetailView extends StatelessWidget {
       (appLocalizations.domain, dnsQuery.domain),
       (appLocalizations.recordType, dnsQuery.type),
       (appLocalizations.initiator, dnsQuery.initiator?.label ?? ''),
+      (
+        appLocalizations.interfaceNameMode,
+        dnsQuery.cached
+            ? '—'
+            : dnsQuery.egressInterface.isEmpty
+            ? appLocalizations.unknown
+            : dnsQuery.egressInterface,
+      ),
       (appLocalizations.source, dnsQuery.upstream),
       (
         appLocalizations.cache,
