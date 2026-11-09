@@ -154,12 +154,17 @@ class _ProxyDialerItem extends ConsumerWidget {
       invalid: issues.isNotEmpty,
       onPressed: onPressed,
       contentPadding: const EdgeInsets.only(left: 16, right: 8),
-      title: TooltipText(
-        text: Text(proxy.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+      title: Tooltip(
+        message: proxy.name,
+        child: EmojiText(
+          proxy.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
       subtitle: target == null
           ? null
-          : Text(target, maxLines: 1, overflow: TextOverflow.ellipsis),
+          : EmojiText(target, maxLines: 1, overflow: TextOverflow.ellipsis),
       trailing: issues.isEmpty ? null : CustomIssueButton(issues: issues),
     );
   }
