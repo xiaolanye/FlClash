@@ -273,6 +273,12 @@ class _TrackerInfoBody extends StatelessWidget {
                   ),
                 ],
               ),
+            Text(
+              trackerInfo.egressInterface.isEmpty
+                  ? context.appLocalizations.unknown
+                  : trackerInfo.egressInterface,
+              style: styles.secondary,
+            ),
           ],
         ),
         if (source.isNotEmpty) Text(source, style: styles.secondary),
@@ -433,6 +439,12 @@ class TrackerInfoDetailView extends ConsumerWidget {
               (appLocalizations.dnsMode, metadata.dnsMode?.name ?? ''),
             ]),
             _buildChains(context),
+            DetailRow.text(
+              title: appLocalizations.interfaceNameMode,
+              value: trackerInfo.egressInterface.isEmpty
+                  ? appLocalizations.unknown
+                  : trackerInfo.egressInterface,
+            ),
           ],
         ),
         if (mitmFeature) _MitmHostSection(metadata: metadata),
