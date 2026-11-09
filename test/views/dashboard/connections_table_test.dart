@@ -44,6 +44,7 @@ TrackerInfo _request(String host, int download) {
     start: DateTime.utc(2026),
     metadata: Metadata(network: 'tcp', host: host, destinationPort: '443'),
     chains: const ['DIRECT'],
+    egressInterface: host == 'alpha.test' ? 'Wi-Fi' : 'iPhone USB',
     rule: 'MATCH',
     rulePayload: '',
   );
@@ -103,6 +104,8 @@ void main() {
   testWidgets('tapping a column head sorts the card table', (tester) async {
     await pumpRequestsTable(tester);
 
+    expect(find.text('Wi-Fi'), findsOneWidget);
+    expect(find.text('iPhone USB'), findsNWidgets(2));
     expect(topOf(tester, 'beta.test'), lessThan(topOf(tester, 'alpha.test')));
 
     await tester.tap(find.text('Traffic'));
