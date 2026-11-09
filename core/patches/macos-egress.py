@@ -241,7 +241,10 @@ update('dns/doh.go',
     }
     httpReq, err := http.NewRequestWithContext(ctx, method, requestUrl.String(), nil)
 ''', 1),
-       ('\treturn resp, err\n}', '''    if name := route.Load(); err == nil && name != nil {
+       ('\tif resp.Id != req.Id {\n\t\terr = D.ErrId\n\t}\n\n\treturn resp, err\n}', '''    if resp.Id != req.Id {
+        err = D.ErrId
+    }
+    if name := route.Load(); err == nil && name != nil {
         traceInterface(ctx, resp, *name)
     }
     return resp, err
