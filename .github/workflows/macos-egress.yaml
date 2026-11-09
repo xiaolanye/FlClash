@@ -4,7 +4,10 @@ on:
   push:
     branches: [feature/macos-egress]
     paths:
-      - 'core/patches/macos-egress.py'
+      - '.github/workflows/macos-egress.yaml'
+      - 'core/**'
+      - 'lib/**'
+      - 'test/**'
   workflow_dispatch:
 
 permissions:
@@ -40,16 +43,22 @@ jobs:
           (cd core && CGO_ENABLED=0 go test .)
           flutter pub get
           dart run build_runner build --delete-conflicting-outputs
-          dart run intl_utils:generate
           flutter analyze --no-fatal-infos
-          flutter test test/models test/core/protocol_contract_test.dart test/widgets/tracker_info_mitm_host_test.dart
+          flutter test test/models test/core/protocol_contract_test.dart \
+            test/widgets/tracker_info_mitm_host_test.dart \
+            test/views/dashboard/connections_table_test.dart test/views/dns_queries_view_test.dart
       - name: Build the Apple Silicon DMG
         run: |
           test "$(uname -m)" = arm64
-          dart setup.dart macos --arch arm64 --env stable -v
-          find dist -name '*.dmg' -print
+          dart setup.dart macos --targets dmg --env stable -v
+          image=$(find dist -type f -name '*.dmg' -print -quit)
+          test -n "$image"
+          hdiutil verify "$image"
+          mkdir -p verified-package
+          cp "$image" verified-package/FlClash-0.9.3-macos-arm64-egress.dmg
+          shasum -a 256 verified-package/*.dmg
       - uses: actions/upload-artifact@v4
         with:
           name: FlClash-macOS-arm64-custom
-          path: dist/**/*.dmg
+          path: verified-package/*.dmg
           if-no-files-found: error
