@@ -4,7 +4,7 @@ on:
   push:
     branches: [feature/macos-egress]
     paths:
-      - 'core/patches/macos-egress.patch'
+      - 'core/patches/macos-egress.py'
   workflow_dispatch:
 
 permissions:
@@ -29,8 +29,9 @@ jobs:
           flutter-version: '3.47.6'
       - name: Prepare the core
         run: |
-          git -C core/Clash.Meta apply --check ../patches/macos-egress.patch
-          git -C core/Clash.Meta apply ../patches/macos-egress.patch
+          python3 core/patches/macos-egress.py
+          git -C core/Clash.Meta diff --check
+          gofmt -w core/dns_query.go
           bundle=core/Clash.Meta/component/ca/ca-certificates.crt
           curl -fsSL --retry 3 -o "$bundle" https://curl.se/ca/cacert-2026-09-25.pem
           echo "a41b5d356aea97a529fe27e0f7316d2f9d946d75927476cf9cf1b90637d00505  $bundle" | shasum -a 256 -c -
