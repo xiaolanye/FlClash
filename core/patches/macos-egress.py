@@ -38,6 +38,11 @@ import (
 func Interface(socket any) string {
     var source net.Addr
     for depth := 0; socket != nil && depth < 24; depth++ {
+        if conn, ok := socket.(interface{ EgressInterface() string }); ok {
+            if name := conn.EgressInterface(); name != "" {
+                return name
+            }
+        }
         if conn, ok := socket.(interface{ LocalAddr() net.Addr }); ok {
             if addr := conn.LocalAddr(); localIP(addr).IsValid() {
                 source = addr
@@ -142,20 +147,28 @@ func interfaceLabel(device string) string {
         return device
     }
     ports.Lock()
-    defer ports.Unlock()
     if time.Now().After(ports.nextRefresh) {
         ports.nextRefresh = time.Now().Add(15 * time.Second)
-        ctx, cancel := context.WithTimeout(context.Background(), 400 * time.Millisecond)
-        output, err := exec.CommandContext(ctx, "/usr/sbin/networksetup", "-listallhardwareports").Output()
-        cancel()
-        if err == nil {
-            ports.labels = hardwarePorts(string(output))
-        }
+        go refreshPorts()
     }
-    if name := ports.labels[device]; name != "" {
+    name := ports.labels[device]
+    ports.Unlock()
+    if name != "" {
         return name
     }
     return device
+}
+
+func refreshPorts() {
+    ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+    defer cancel()
+    output, err := exec.CommandContext(ctx, "/usr/sbin/networksetup", "-listallhardwareports").Output()
+    if err != nil {
+        return
+    }
+    ports.Lock()
+    ports.labels = hardwarePorts(string(output))
+    ports.Unlock()
 }
 
 func hardwarePorts(output string) map[string]string {
@@ -263,5 +276,40 @@ update('dns/dot.go',
 update('dns/doq.go',
        ('\treturn resp, nil\n}\n\n// shouldRetry',
         '\ttraceConnection(ctx, resp, conn)\n\treturn resp, nil\n}\n\n// shouldRetry', 1))
+
+update('adapter/outbound/base.go',
+       ('\t"github.com/metacubex/mihomo/component/dialer"\n',
+        '\t"github.com/metacubex/mihomo/component/dialer"\n\t"github.com/metacubex/mihomo/component/egress"\n', 1),
+       ('\tadapterAddr string\n}', '\tadapterAddr string\n\tegressName string\n}', 1),
+       ('\tresolveUDP  func(ctx context.Context, metadata *C.Metadata) error\n}',
+        '\tresolveUDP  func(ctx context.Context, metadata *C.Metadata) error\n\tegressName string\n}', 1),
+       ('func NewConn(c net.Conn, a C.ProxyAdapter) C.Conn {', '''func (c *conn) EgressInterface() string { return c.egressName }
+
+func NewConn(c net.Conn, a C.ProxyAdapter) C.Conn {
+    return newConnOn(c, a, c)
+}
+
+func newConnOn(c net.Conn, a C.ProxyAdapter, transport any) C.Conn {''', 1),
+       ('&conn{N.NewExtendedConn(c), nil, nil, a.Addr()}',
+        '&conn{N.NewExtendedConn(c), nil, nil, a.Addr(), egress.Interface(transport)}', 1),
+       ('func NewPacketConn(pc net.PacketConn, a ProxyAdapter) C.PacketConn {', '''func (c *packetConn) EgressInterface() string { return c.egressName }
+
+func NewPacketConn(pc net.PacketConn, a ProxyAdapter) C.PacketConn {
+    return newPacketConnOn(pc, a, pc)
+}
+
+func newPacketConnOn(pc net.PacketConn, a ProxyAdapter, transport any) C.PacketConn {''', 1),
+       ('&packetConn{epc, nil, nil, a.Name(), utils.NewUUIDV4().String(), a.Addr(), a.ResolveUDP}',
+        '&packetConn{epc, nil, nil, a.Name(), utils.NewUUIDV4().String(), a.Addr(), a.ResolveUDP, egress.Interface(transport)}', 1))
+
+update('adapter/outbound/shadowsocks.go',
+       ('\tc, err = ss.StreamConnContext(ctx, c, metadata)\n\treturn NewConn(c, ss), err',
+        '\ttransport := c\n\tc, err = ss.StreamConnContext(ctx, c, metadata)\n\treturn newConnOn(c, ss, transport), err', 1),
+       ('NewPacketConn(N.NewThreadSafePacketConn(uot.NewConn(c, uot.Request{Destination: destination})), ss)',
+        'newPacketConnOn(N.NewThreadSafePacketConn(uot.NewConn(c, uot.Request{Destination: destination})), ss, c)', 1),
+       ('NewPacketConn(N.NewThreadSafePacketConn(uot.NewLazyConn(c, uot.Request{Destination: destination})), ss)',
+        'newPacketConnOn(N.NewThreadSafePacketConn(uot.NewLazyConn(c, uot.Request{Destination: destination})), ss, c)', 1),
+       ('\tpc = ss.method.DialPacketConn(bufio.NewBindPacketConn(pc, addr))\n\treturn NewPacketConn(pc, ss), nil',
+        '\ttransport := pc\n\tpc = ss.method.DialPacketConn(bufio.NewBindPacketConn(pc, addr))\n\treturn newPacketConnOn(pc, ss, transport), nil', 1))
 
 subprocess.run(['gofmt', '-w', *map(str, changed)], check=True)
