@@ -77,6 +77,37 @@ List<PopupMenuItem> trackerInfoMenuItems(
   ];
 }
 
+class TrackerProxyChip extends StatelessWidget {
+  final String label;
+  final VoidCallback? onPressed;
+
+  const TrackerProxyChip({super.key, required this.label, this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
+    final foreground = colorScheme.onSurfaceVariant;
+    return PressSurface(
+      fill: context.raisedSurfaceLevel.colorOf(colorScheme),
+      shape: AppShape.sm,
+      inkColor: foreground,
+      childFills: true,
+      onPressed: onPressed,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+        child: EmojiText(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: AppTextStyle.caption1
+              .of(context, emphasized: true)
+              .copyWith(color: foreground),
+        ),
+      ),
+    );
+  }
+}
+
 class TrackerInfoItem extends ConsumerWidget {
   final TrackerInfo trackerInfo;
   final bool isLive;
@@ -207,7 +238,6 @@ class _TrackerInfoBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = context.colorScheme;
     final styles = RecordTextStyles.of(context);
     final metadata = trackerInfo.metadata;
     final rule = trackerInfo.ruleText;
@@ -233,10 +263,8 @@ class _TrackerInfoBody extends StatelessWidget {
                 children: [
                   if (index > 0 || rule.isNotEmpty) const RecordArrow(),
                   Flexible(
-                    child: TonalChip(
+                    child: TrackerProxyChip(
                       label: chain,
-                      color: context.raisedSurfaceLevel.colorOf(colorScheme),
-                      foregroundColor: colorScheme.onSurfaceVariant,
                       onPressed: () => RecordFilterScope.add(
                         context,
                         RecordFilter(RecordFacetKind.proxy, chain),
@@ -341,7 +369,7 @@ class TrackerInfoDetailView extends ConsumerWidget {
               spacing: 6,
               children: [
                 if (index > 0) const RecordArrow(),
-                Flexible(child: MetaChip(label: chain)),
+                Flexible(child: TrackerProxyChip(label: chain)),
               ],
             ),
         ],
