@@ -28,6 +28,7 @@ DnsQuery _dnsQuery(
   String type = 'A',
   DnsQueryInitiator? initiator,
   String upstream = '',
+  String egressInterface = '',
   bool cached = false,
   List<String> answers = const ['1.1.1.1'],
   String rcode = 'NOERROR',
@@ -39,6 +40,7 @@ DnsQuery _dnsQuery(
     type: type,
     initiator: initiator,
     upstream: upstream,
+    egressInterface: egressInterface,
     cached: cached,
     answers: answers,
     rcode: rcode,
@@ -172,9 +174,10 @@ void main() {
         'alpha.test',
         initiator: DnsQueryInitiator.app,
         upstream: 'tls://1.1.1.1:853',
+        egressInterface: 'Wi-Fi',
         answers: ['93.184.216.34', '93.184.216.35'],
       ),
-      _dnsQuery('cached.test', cached: true),
+      _dnsQuery('cached.test', cached: true, egressInterface: 'iPhone USB'),
       _dnsQuery(
         'missing.test',
         type: 'AAAA',
@@ -204,6 +207,8 @@ void main() {
     }
     expect(find.byType(DnsQueryItem), findsNothing);
     expect(find.text('93.184.216.34, 93.184.216.35'), findsOneWidget);
+    expect(find.text('Wi-Fi'), findsOneWidget);
+    expect(find.text('iPhone USB'), findsNothing);
     expect(find.text('tls://1.1.1.1:853'), findsOneWidget);
     expect(find.widgetWithText(RecordLabel, 'App'), findsOneWidget);
     expect(find.widgetWithText(RecordLabel, 'Cache'), findsOneWidget);
