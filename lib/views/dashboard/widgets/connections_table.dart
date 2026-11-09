@@ -753,6 +753,15 @@ List<RecordColumn<TrackerInfo>> _connectionColumns(
       sortKey: _exitKey,
     ),
     RecordColumn(
+      TableColumn('egress', appLocalizations.interfaceNameMode, width: 88),
+      cell: (_, info) => _Muted(
+        info.egressInterface.isEmpty
+            ? appLocalizations.unknown
+            : info.egressInterface,
+      ),
+      sortKey: (info) => info.egressInterface.toLowerCase(),
+    ),
+    RecordColumn(
       TableColumn(
         'download',
         appLocalizations.download,
@@ -822,6 +831,15 @@ List<RecordColumn<TrackerInfo>> _requestColumns(BuildContext context) {
       sortKey: _exitKey,
     ),
     RecordColumn(
+      TableColumn('egress', appLocalizations.interfaceNameMode, width: 88),
+      cell: (_, info) => _Muted(
+        info.egressInterface.isEmpty
+            ? appLocalizations.unknown
+            : info.egressInterface,
+      ),
+      sortKey: (info) => info.egressInterface.toLowerCase(),
+    ),
+    RecordColumn(
       TableColumn('traffic', appLocalizations.traffic, width: 64, end: true),
       cell: (_, info) => _Number(dashboardTraffic(info.upload + info.download)),
       sortKey: (info) => info.upload + info.download,
@@ -856,6 +874,17 @@ List<RecordColumn<DnsQuery>> _dnsColumns(BuildContext context) {
       TableColumn('initiator', appLocalizations.initiatorShort, width: 52),
       cell: (_, query) => _Muted(query.initiator?.label ?? '—'),
       sortKey: (query) => query.initiator?.label ?? '',
+    ),
+    RecordColumn(
+      TableColumn('egress', appLocalizations.interfaceNameMode, width: 88),
+      cell: (_, query) => _Muted(
+        query.cached
+            ? '—'
+            : query.egressInterface.isEmpty
+            ? appLocalizations.unknown
+            : query.egressInterface,
+      ),
+      sortKey: (query) => query.egressInterface.toLowerCase(),
     ),
     RecordColumn(
       TableColumn('result', appLocalizations.result, flex: 1),
