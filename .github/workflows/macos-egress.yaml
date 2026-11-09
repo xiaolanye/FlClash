@@ -1,0 +1,54 @@
+name: macOS Apple Silicon custom build
+
+on:
+  push:
+    branches: [feature/macos-egress]
+    paths:
+      - 'core/patches/macos-egress.patch'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.repository == 'xiaolanye/FlClash' && github.ref == 'refs/heads/feature/macos-egress'
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+          cache-dependency-path: core/go.sum
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.6'
+      - name: Prepare the core
+        run: |
+          git -C core/Clash.Meta apply --check ../patches/macos-egress.patch
+          git -C core/Clash.Meta apply ../patches/macos-egress.patch
+          bundle=core/Clash.Meta/component/ca/ca-certificates.crt
+          curl -fsSL --retry 3 -o "$bundle" https://curl.se/ca/cacert-2026-09-25.pem
+          echo "a41b5d356aea97a529fe27e0f7316d2f9d946d75927476cf9cf1b90637d00505  $bundle" | shasum -a 256 -c -
+      - name: Verify Go and Flutter
+        run: |
+          (cd core && CGO_ENABLED=0 go test .)
+          flutter pub get
+          dart run build_runner build --delete-conflicting-outputs
+          dart run intl_utils:generate
+          flutter analyze --no-fatal-infos
+          flutter test test/models test/core/protocol_contract_test.dart test/widgets/tracker_info_mitm_host_test.dart
+      - name: Build the Apple Silicon DMG
+        run: |
+          test "$(uname -m)" = arm64
+          dart setup.dart macos --arch arm64 --env stable -v
+          find dist -name '*.dmg' -print
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FlClash-macOS-arm64-custom
+          path: dist/**/*.dmg
+          if-no-files-found: error
