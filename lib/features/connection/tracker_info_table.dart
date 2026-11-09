@@ -61,6 +61,16 @@ List<RecordColumn<TrackerInfo>> trackerInfoColumns(
       cell: (_, info) => _ExitChip(exit: info.chains.firstOrNull ?? ''),
       sortKey: (info) => (info.chains.firstOrNull ?? '').toLowerCase(),
     ),
+    RecordColumn(
+      TableColumn('egress', appLocalizations.interfaceNameMode, width: 100),
+      cell: (_, info) => RecordCellText(
+        info.egressInterface.isEmpty
+            ? appLocalizations.unknown
+            : info.egressInterface,
+        muted: true,
+      ),
+      sortKey: (info) => info.egressInterface.toLowerCase(),
+    ),
     if (isLive) ...[
       _amountColumn(
         'downloadSpeed',
