@@ -12,7 +12,8 @@ type DnsQuery struct {
 	Domain    string    `json:"domain"`
 	Type      string    `json:"type"`
 	Initiator string    `json:"initiator"`
-	Upstream  string    `json:"upstream,omitempty"`
+	Upstream        string    `json:"upstream,omitempty"`
+	EgressInterface string    `json:"egressInterface,omitempty"`
 	Cached    bool      `json:"cached,omitempty"`
 	Answers   []string  `json:"answers"`
 	Rcode     string    `json:"rcode,omitempty"`
@@ -26,7 +27,8 @@ func newDnsQuery(record dns.QueryRecord) DnsQuery {
 		Domain:    strings.TrimSuffix(record.Question.Name, "."),
 		Type:      D.Type(record.Question.Qtype).String(),
 		Initiator: record.Initiator,
-		Upstream:  record.Upstream,
+		Upstream:        record.Upstream,
+		EgressInterface: record.EgressInterface,
 		Cached:    record.Cached,
 		Answers:   []string{},
 		Delay:     time.Since(record.Start).Milliseconds(),
