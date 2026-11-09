@@ -124,6 +124,7 @@ abstract class TrackerInfo with _$TrackerInfo {
     required List<String> chains,
     required String rule,
     required String rulePayload,
+    @Default('') String egressInterface,
     int? downloadSpeed,
     int? uploadSpeed,
   }) = _TrackerInfo;
@@ -311,6 +312,7 @@ abstract class DnsQuery with _$DnsQuery {
     @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)
     DnsQueryInitiator? initiator,
     @Default('') String upstream,
+    @Default('') String egressInterface,
     @Default(false) bool cached,
     @Default([]) List<String> answers,
     @Default('') String rcode,
