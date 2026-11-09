@@ -144,6 +144,7 @@ extension RecordFacetKindL10n on RecordFacetKind {
       RecordFacetKind.network => appLocalizations.protocol,
       RecordFacetKind.rule => appLocalizations.rule,
       RecordFacetKind.level => appLocalizations.logLevel,
+      RecordFacetKind.interface => appLocalizations.interfaceNameMode,
       RecordFacetKind.mitm ||
       RecordFacetKind.app ||
       RecordFacetKind.proxy ||

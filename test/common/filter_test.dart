@@ -65,6 +65,68 @@ void main() {
       expect(domains(state.copyWith(query: '2001:db8')), ['b.test']);
     });
 
+    test('filters by the interface a query shows', () {
+      final queries = [
+        DnsQuery(
+          domain: 'wifi.test',
+          type: 'A',
+          egressInterface: 'Wi-Fi',
+          time: DateTime.utc(2026),
+        ),
+        DnsQuery(
+          domain: 'phone.test',
+          type: 'A',
+          egressInterface: 'iPhone USB',
+          time: DateTime.utc(2026),
+        ),
+        DnsQuery(
+          domain: 'cached.test',
+          type: 'A',
+          cached: true,
+          egressInterface: 'Ethernet',
+          time: DateTime.utc(2026),
+        ),
+      ];
+      List<String> filtered(String value) => queries
+          .whereFilters(dnsQueryFacets, [
+            RecordFilter(RecordFacetKind.interface, value),
+          ])
+          .map((query) => query.domain)
+          .toList();
+
+      expect(filtered('Wi-Fi'), ['wifi.test']);
+      expect(filtered('iPhone USB'), ['phone.test']);
+      expect(filtered('Ethernet'), isEmpty);
+      expect(
+        dnsQueryFacets
+            .firstWhere((facet) => facet.kind == RecordFacetKind.interface)
+            .optionsOf(queries),
+        ['iPhone USB', 'Wi-Fi'],
+      );
+    });
+
+    test('query matches the interface a query shows', () {
+      final state = DnsQueriesState(
+        dnsQueries: [
+          DnsQuery(
+            domain: 'wifi.test',
+            type: 'A',
+            egressInterface: 'Wi-Fi',
+            time: DateTime.utc(2026),
+          ),
+          DnsQuery(
+            domain: 'cached.test',
+            type: 'A',
+            cached: true,
+            egressInterface: 'Ethernet',
+            time: DateTime.utc(2026),
+          ),
+        ],
+      );
+      expect(domains(state.copyWith(query: 'wi-fi')), ['wifi.test']);
+      expect(domains(state.copyWith(query: 'ethernet')), isEmpty);
+    });
+
     test('query matches the upstream, the error and the chips', () {
       final state = DnsQueriesState(
         dnsQueries: [
@@ -220,6 +282,28 @@ void main() {
             RecordFilter(RecordFacetKind.proxy, 'proxy-b'),
           ]).toList();
       expect(infos.map((info) => info.id), ['1']);
+    });
+
+    test('filters by the interface', () {
+      final infos =
+          [
+            tracker('1').copyWith(egressInterface: 'Wi-Fi'),
+            tracker('2').copyWith(egressInterface: 'iPhone USB'),
+          ].whereFilters(trackerInfoFacets, const [
+            RecordFilter(RecordFacetKind.interface, 'Wi-Fi'),
+          ]).toList();
+      expect(infos.map((info) => info.id), ['1']);
+    });
+
+    test('query matches the interface', () {
+      final state = TrackerInfosState(
+        trackerInfos: [
+          tracker('1').copyWith(egressInterface: 'Wi-Fi'),
+          tracker('2').copyWith(egressInterface: 'iPhone USB'),
+        ],
+        query: 'iphone',
+      );
+      expect(state.list.map((info) => info.id), ['2']);
     });
 
     test('filters by process', () {

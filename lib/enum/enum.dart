@@ -132,6 +132,7 @@ enum RecordFacetKind {
   initiator,
   cache,
   rcode,
+  interface,
 }
 
 enum RecordGrouping { app, host, rule, exit }

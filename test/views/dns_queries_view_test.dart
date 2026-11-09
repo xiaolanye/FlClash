@@ -207,7 +207,8 @@ void main() {
     }
     expect(find.byType(DnsQueryItem), findsNothing);
     expect(find.text('93.184.216.34, 93.184.216.35'), findsOneWidget);
-    expect(find.text('Wi-Fi'), findsOneWidget);
+    expect(find.widgetWithText(RecordLabel, 'Wi-Fi'), findsOneWidget);
+    expect(find.widgetWithText(Chip, 'Wi-Fi'), findsOneWidget);
     expect(find.text('iPhone USB'), findsNothing);
     expect(find.text('tls://1.1.1.1:853'), findsOneWidget);
     expect(find.widgetWithText(RecordLabel, 'App'), findsOneWidget);
@@ -283,6 +284,29 @@ void main() {
     await tester.pump();
 
     expect(find.text('gamma.test'), findsOneWidget);
+
+    await teardownView(tester);
+  });
+
+  testWidgets('an interface chip keeps only the queries that used it', (
+    tester,
+  ) async {
+    seedDnsQueries([
+      _dnsQuery('wifi.test', egressInterface: 'Wi-Fi'),
+      _dnsQuery('phone.test', egressInterface: 'iPhone USB'),
+      _dnsQuery('cached.test', cached: true, egressInterface: 'Ethernet'),
+    ]);
+
+    await pumpDnsQueries(tester, size: _listSize);
+    expect(find.widgetWithText(RecordLabel, 'Wi-Fi'), findsOneWidget);
+    expect(find.text('Ethernet'), findsNothing);
+
+    await tester.tap(find.widgetWithText(RecordLabel, 'iPhone USB'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('phone.test'), findsOneWidget);
+    expect(find.text('wifi.test'), findsNothing);
+    expect(find.text('cached.test'), findsNothing);
 
     await teardownView(tester);
   });

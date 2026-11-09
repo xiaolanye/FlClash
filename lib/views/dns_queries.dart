@@ -278,14 +278,7 @@ List<RecordColumn<DnsQuery>> _dnsQueryColumns(
     ),
     RecordColumn(
       TableColumn('egress', appLocalizations.interfaceNameMode, width: 100),
-      cell: (_, query) => RecordCellText(
-        query.cached
-            ? '—'
-            : query.egressInterface.isEmpty
-            ? appLocalizations.unknown
-            : query.egressInterface,
-        muted: true,
-      ),
+      cell: (_, query) => _DnsInterface(query),
       sortKey: (query) => query.egressInterface.toLowerCase(),
     ),
     RecordColumn(
@@ -306,6 +299,24 @@ List<RecordColumn<DnsQuery>> _dnsQueryColumns(
       descendingFirst: true,
     ),
   ];
+}
+
+class _DnsInterface extends StatelessWidget {
+  final DnsQuery query;
+
+  const _DnsInterface(this.query);
+
+  @override
+  Widget build(BuildContext context) {
+    if (query.cached) {
+      return const RecordCellText('—');
+    }
+    final name = query.egressInterface;
+    if (name.isEmpty) {
+      return RecordCellText(context.appLocalizations.unknown, muted: true);
+    }
+    return _DnsKeyword(RecordFilter(RecordFacetKind.interface, name));
+  }
 }
 
 class _DnsKeyword extends StatelessWidget {
@@ -427,12 +438,17 @@ class DnsQueryItem extends StatelessWidget {
                       : RecordTone.neutral,
                 ),
               if (!dnsQuery.cached)
-                Text(
-                  dnsQuery.egressInterface.isEmpty
-                      ? context.appLocalizations.unknown
-                      : dnsQuery.egressInterface,
-                  style: styles.secondary,
-                ),
+                dnsQuery.egressInterface.isEmpty
+                    ? Text(
+                        context.appLocalizations.unknown,
+                        style: styles.secondary,
+                      )
+                    : _DnsKeyword(
+                        RecordFilter(
+                          RecordFacetKind.interface,
+                          dnsQuery.egressInterface,
+                        ),
+                      ),
               if (dnsQuery.upstream.isNotEmpty)
                 Text(dnsQuery.upstream, style: styles.secondary),
             ],

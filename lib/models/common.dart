@@ -183,6 +183,7 @@ extension TrackerInfoExt on TrackerInfo {
     metadata.specialRules,
     rule,
     rulePayload,
+    egressInterface,
     ...chains,
   ];
 }
@@ -266,6 +267,11 @@ final trackerInfoFacets = <RecordFacet<TrackerInfo>>[
   ),
   RecordFacet(RecordFacetKind.app, (info) => [info.metadata.process]),
   RecordFacet(RecordFacetKind.proxy, (info) => info.chains),
+  RecordFacet(
+    RecordFacetKind.interface,
+    (info) => [info.egressInterface],
+    offered: true,
+  ),
 ];
 
 final trackerInfoGroupers = <RecordGrouper<TrackerInfo>>[
@@ -353,6 +359,7 @@ extension DnsQueryExt on DnsQuery {
     ...tags,
     rcode,
     upstream,
+    if (!cached) egressInterface,
     error,
     ...answers,
   ];
@@ -382,6 +389,14 @@ final dnsQueryFacets = <RecordFacet<DnsQuery>>[
       ],
       offered: true,
     ),
+  RecordFacet(
+    RecordFacetKind.interface,
+    (query) => [
+      if (!query.cached && query.egressInterface.isNotEmpty)
+        query.egressInterface,
+    ],
+    offered: true,
+  ),
 ];
 
 extension DnsQueriesStateExt on DnsQueriesState {

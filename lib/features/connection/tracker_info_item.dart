@@ -77,6 +77,29 @@ List<PopupMenuItem> trackerInfoMenuItems(
   ];
 }
 
+class TrackerInterfaceLabel extends StatelessWidget {
+  final String name;
+
+  const TrackerInterfaceLabel(this.name, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    if (name.isEmpty) {
+      return Text(
+        context.appLocalizations.unknown,
+        style: RecordTextStyles.of(context).secondary,
+      );
+    }
+    return RecordLabel(
+      label: name,
+      onPressed: () => RecordFilterScope.add(
+        context,
+        RecordFilter(RecordFacetKind.interface, name),
+      ),
+    );
+  }
+}
+
 class TrackerProxyChip extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
@@ -273,12 +296,7 @@ class _TrackerInfoBody extends StatelessWidget {
                   ),
                 ],
               ),
-            Text(
-              trackerInfo.egressInterface.isEmpty
-                  ? context.appLocalizations.unknown
-                  : trackerInfo.egressInterface,
-              style: styles.secondary,
-            ),
+            TrackerInterfaceLabel(trackerInfo.egressInterface),
           ],
         ),
         if (source.isNotEmpty) Text(source, style: styles.secondary),

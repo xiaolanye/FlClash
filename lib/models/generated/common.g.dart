@@ -90,6 +90,7 @@ _TrackerInfo _$TrackerInfoFromJson(Map<String, dynamic> json) => _TrackerInfo(
   chains: (json['chains'] as List<dynamic>).map((e) => e as String).toList(),
   rule: json['rule'] as String,
   rulePayload: json['rulePayload'] as String,
+  egressInterface: json['egressInterface'] as String? ?? '',
   downloadSpeed: (json['downloadSpeed'] as num?)?.toInt(),
   uploadSpeed: (json['uploadSpeed'] as num?)?.toInt(),
 );
@@ -104,6 +105,7 @@ Map<String, dynamic> _$TrackerInfoToJson(_TrackerInfo instance) =>
       'chains': instance.chains,
       'rule': instance.rule,
       'rulePayload': instance.rulePayload,
+      'egressInterface': instance.egressInterface,
       'downloadSpeed': instance.downloadSpeed,
       'uploadSpeed': instance.uploadSpeed,
     };
@@ -138,6 +140,7 @@ _DnsQuery _$DnsQueryFromJson(Map<String, dynamic> json) => _DnsQuery(
     unknownValue: JsonKey.nullForUndefinedEnumValue,
   ),
   upstream: json['upstream'] as String? ?? '',
+  egressInterface: json['egressInterface'] as String? ?? '',
   cached: json['cached'] as bool? ?? false,
   answers:
       (json['answers'] as List<dynamic>?)?.map((e) => e as String).toList() ??
@@ -153,6 +156,7 @@ Map<String, dynamic> _$DnsQueryToJson(_DnsQuery instance) => <String, dynamic>{
   'type': instance.type,
   'initiator': _$DnsQueryInitiatorEnumMap[instance.initiator],
   'upstream': instance.upstream,
+  'egressInterface': instance.egressInterface,
   'cached': instance.cached,
   'answers': instance.answers,
   'rcode': instance.rcode,

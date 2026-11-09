@@ -63,12 +63,7 @@ List<RecordColumn<TrackerInfo>> trackerInfoColumns(
     ),
     RecordColumn(
       TableColumn('egress', appLocalizations.interfaceNameMode, width: 100),
-      cell: (_, info) => RecordCellText(
-        info.egressInterface.isEmpty
-            ? appLocalizations.unknown
-            : info.egressInterface,
-        muted: true,
-      ),
+      cell: (_, info) => TrackerInterfaceLabel(info.egressInterface),
       sortKey: (info) => info.egressInterface.toLowerCase(),
     ),
     if (isLive) ...[

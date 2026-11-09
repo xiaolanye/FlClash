@@ -916,7 +916,7 @@ as bool,
 /// @nodoc
 mixin _$TrackerInfo {
 
- String get id; int get upload; int get download; DateTime get start; Metadata get metadata; List<String> get chains; String get rule; String get rulePayload; int? get downloadSpeed; int? get uploadSpeed;
+ String get id; int get upload; int get download; DateTime get start; Metadata get metadata; List<String> get chains; String get rule; String get rulePayload; String get egressInterface; int? get downloadSpeed; int? get uploadSpeed;
 /// Create a copy of TrackerInfo
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -930,20 +930,20 @@ $TrackerInfoCopyWith<TrackerInfo> get copyWith => _$TrackerInfoCopyWithImpl<Trac
 @override
 bool operator ==(Object other) {
   final _this = this as TrackerInfo;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TrackerInfo&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.upload, _this.upload) || other.upload == _this.upload)&&(identical(other.download, _this.download) || other.download == _this.download)&&(identical(other.start, _this.start) || other.start == _this.start)&&(identical(other.metadata, _this.metadata) || other.metadata == _this.metadata)&&const DeepCollectionEquality().equals(other.chains, _this.chains)&&(identical(other.rule, _this.rule) || other.rule == _this.rule)&&(identical(other.rulePayload, _this.rulePayload) || other.rulePayload == _this.rulePayload)&&(identical(other.downloadSpeed, _this.downloadSpeed) || other.downloadSpeed == _this.downloadSpeed)&&(identical(other.uploadSpeed, _this.uploadSpeed) || other.uploadSpeed == _this.uploadSpeed));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TrackerInfo&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.upload, _this.upload) || other.upload == _this.upload)&&(identical(other.download, _this.download) || other.download == _this.download)&&(identical(other.start, _this.start) || other.start == _this.start)&&(identical(other.metadata, _this.metadata) || other.metadata == _this.metadata)&&const DeepCollectionEquality().equals(other.chains, _this.chains)&&(identical(other.rule, _this.rule) || other.rule == _this.rule)&&(identical(other.rulePayload, _this.rulePayload) || other.rulePayload == _this.rulePayload)&&(identical(other.egressInterface, _this.egressInterface) || other.egressInterface == _this.egressInterface)&&(identical(other.downloadSpeed, _this.downloadSpeed) || other.downloadSpeed == _this.downloadSpeed)&&(identical(other.uploadSpeed, _this.uploadSpeed) || other.uploadSpeed == _this.uploadSpeed));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as TrackerInfo;
-  return Object.hash(runtimeType,_this.id,_this.upload,_this.download,_this.start,_this.metadata,const DeepCollectionEquality().hash(_this.chains),_this.rule,_this.rulePayload,_this.downloadSpeed,_this.uploadSpeed);
+  return Object.hash(runtimeType,_this.id,_this.upload,_this.download,_this.start,_this.metadata,const DeepCollectionEquality().hash(_this.chains),_this.rule,_this.rulePayload,_this.egressInterface,_this.downloadSpeed,_this.uploadSpeed);
 }
 
 @override
 String toString() {
   final _this = this as TrackerInfo;
-  return 'TrackerInfo(id: ${_this.id}, upload: ${_this.upload}, download: ${_this.download}, start: ${_this.start}, metadata: ${_this.metadata}, chains: ${_this.chains}, rule: ${_this.rule}, rulePayload: ${_this.rulePayload}, downloadSpeed: ${_this.downloadSpeed}, uploadSpeed: ${_this.uploadSpeed})';
+  return 'TrackerInfo(id: ${_this.id}, upload: ${_this.upload}, download: ${_this.download}, start: ${_this.start}, metadata: ${_this.metadata}, chains: ${_this.chains}, rule: ${_this.rule}, rulePayload: ${_this.rulePayload}, egressInterface: ${_this.egressInterface}, downloadSpeed: ${_this.downloadSpeed}, uploadSpeed: ${_this.uploadSpeed})';
 }
 
 
@@ -954,7 +954,7 @@ abstract mixin class $TrackerInfoCopyWith<$Res>  {
   factory $TrackerInfoCopyWith(TrackerInfo value, $Res Function(TrackerInfo) _then) = _$TrackerInfoCopyWithImpl;
 @useResult
 $Res call({
- String id, int upload, int download, DateTime start, Metadata metadata, List<String> chains, String rule, String rulePayload, int? downloadSpeed, int? uploadSpeed
+ String id, int upload, int download, DateTime start, Metadata metadata, List<String> chains, String rule, String rulePayload, String egressInterface, int? downloadSpeed, int? uploadSpeed
 });
 
 
@@ -971,7 +971,7 @@ class _$TrackerInfoCopyWithImpl<$Res>
 
 /// Create a copy of TrackerInfo
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? upload = null,Object? download = null,Object? start = null,Object? metadata = null,Object? chains = null,Object? rule = null,Object? rulePayload = null,Object? downloadSpeed = freezed,Object? uploadSpeed = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? upload = null,Object? download = null,Object? start = null,Object? metadata = null,Object? chains = null,Object? rule = null,Object? rulePayload = null,Object? egressInterface = null,Object? downloadSpeed = freezed,Object? uploadSpeed = freezed,}) {
   return _then(TrackerInfo(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,upload: null == upload ? _self.upload : upload // ignore: cast_nullable_to_non_nullable
@@ -981,6 +981,7 @@ as DateTime,metadata: null == metadata ? _self.metadata : metadata // ignore: ca
 as Metadata,chains: null == chains ? _self.chains : chains // ignore: cast_nullable_to_non_nullable
 as List<String>,rule: null == rule ? _self.rule : rule // ignore: cast_nullable_to_non_nullable
 as String,rulePayload: null == rulePayload ? _self.rulePayload : rulePayload // ignore: cast_nullable_to_non_nullable
+as String,egressInterface: null == egressInterface ? _self.egressInterface : egressInterface // ignore: cast_nullable_to_non_nullable
 as String,downloadSpeed: freezed == downloadSpeed ? _self.downloadSpeed : downloadSpeed // ignore: cast_nullable_to_non_nullable
 as int?,uploadSpeed: freezed == uploadSpeed ? _self.uploadSpeed : uploadSpeed // ignore: cast_nullable_to_non_nullable
 as int?,
@@ -1077,10 +1078,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  int upload,  int download,  DateTime start,  Metadata metadata,  List<String> chains,  String rule,  String rulePayload,  int? downloadSpeed,  int? uploadSpeed)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  int upload,  int download,  DateTime start,  Metadata metadata,  List<String> chains,  String rule,  String rulePayload,  String egressInterface,  int? downloadSpeed,  int? uploadSpeed)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TrackerInfo() when $default != null:
-return $default(_that.id,_that.upload,_that.download,_that.start,_that.metadata,_that.chains,_that.rule,_that.rulePayload,_that.downloadSpeed,_that.uploadSpeed);case _:
+return $default(_that.id,_that.upload,_that.download,_that.start,_that.metadata,_that.chains,_that.rule,_that.rulePayload,_that.egressInterface,_that.downloadSpeed,_that.uploadSpeed);case _:
   return orElse();
 
 }
@@ -1098,10 +1099,10 @@ return $default(_that.id,_that.upload,_that.download,_that.start,_that.metadata,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  int upload,  int download,  DateTime start,  Metadata metadata,  List<String> chains,  String rule,  String rulePayload,  int? downloadSpeed,  int? uploadSpeed)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  int upload,  int download,  DateTime start,  Metadata metadata,  List<String> chains,  String rule,  String rulePayload,  String egressInterface,  int? downloadSpeed,  int? uploadSpeed)  $default,) {final _that = this;
 switch (_that) {
 case _TrackerInfo():
-return $default(_that.id,_that.upload,_that.download,_that.start,_that.metadata,_that.chains,_that.rule,_that.rulePayload,_that.downloadSpeed,_that.uploadSpeed);case _:
+return $default(_that.id,_that.upload,_that.download,_that.start,_that.metadata,_that.chains,_that.rule,_that.rulePayload,_that.egressInterface,_that.downloadSpeed,_that.uploadSpeed);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1118,10 +1119,10 @@ return $default(_that.id,_that.upload,_that.download,_that.start,_that.metadata,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  int upload,  int download,  DateTime start,  Metadata metadata,  List<String> chains,  String rule,  String rulePayload,  int? downloadSpeed,  int? uploadSpeed)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  int upload,  int download,  DateTime start,  Metadata metadata,  List<String> chains,  String rule,  String rulePayload,  String egressInterface,  int? downloadSpeed,  int? uploadSpeed)?  $default,) {final _that = this;
 switch (_that) {
 case _TrackerInfo() when $default != null:
-return $default(_that.id,_that.upload,_that.download,_that.start,_that.metadata,_that.chains,_that.rule,_that.rulePayload,_that.downloadSpeed,_that.uploadSpeed);case _:
+return $default(_that.id,_that.upload,_that.download,_that.start,_that.metadata,_that.chains,_that.rule,_that.rulePayload,_that.egressInterface,_that.downloadSpeed,_that.uploadSpeed);case _:
   return null;
 
 }
@@ -1133,7 +1134,7 @@ return $default(_that.id,_that.upload,_that.download,_that.start,_that.metadata,
 @JsonSerializable()
 
 class _TrackerInfo implements TrackerInfo {
-  const _TrackerInfo({required this.id, this.upload = 0, this.download = 0, required this.start, required this.metadata, required  List<String> chains, required this.rule, required this.rulePayload, this.downloadSpeed, this.uploadSpeed}): _chains = chains;
+  const _TrackerInfo({required this.id, this.upload = 0, this.download = 0, required this.start, required this.metadata, required  List<String> chains, required this.rule, required this.rulePayload, this.egressInterface = '', this.downloadSpeed, this.uploadSpeed}): _chains = chains;
   factory _TrackerInfo.fromJson(Map<String, dynamic> json) => _$TrackerInfoFromJson(json);
 
 @override final  String id;
@@ -1150,6 +1151,7 @@ class _TrackerInfo implements TrackerInfo {
 
 @override final  String rule;
 @override final  String rulePayload;
+@override@JsonKey() final  String egressInterface;
 @override final  int? downloadSpeed;
 @override final  int? uploadSpeed;
 
@@ -1166,18 +1168,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TrackerInfo&&(identical(other.id, id) || other.id == id)&&(identical(other.upload, upload) || other.upload == upload)&&(identical(other.download, download) || other.download == download)&&(identical(other.start, start) || other.start == start)&&(identical(other.metadata, metadata) || other.metadata == metadata)&&const DeepCollectionEquality().equals(other.chains, _chains)&&(identical(other.rule, rule) || other.rule == rule)&&(identical(other.rulePayload, rulePayload) || other.rulePayload == rulePayload)&&(identical(other.downloadSpeed, downloadSpeed) || other.downloadSpeed == downloadSpeed)&&(identical(other.uploadSpeed, uploadSpeed) || other.uploadSpeed == uploadSpeed));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TrackerInfo&&(identical(other.id, id) || other.id == id)&&(identical(other.upload, upload) || other.upload == upload)&&(identical(other.download, download) || other.download == download)&&(identical(other.start, start) || other.start == start)&&(identical(other.metadata, metadata) || other.metadata == metadata)&&const DeepCollectionEquality().equals(other.chains, _chains)&&(identical(other.rule, rule) || other.rule == rule)&&(identical(other.rulePayload, rulePayload) || other.rulePayload == rulePayload)&&(identical(other.egressInterface, egressInterface) || other.egressInterface == egressInterface)&&(identical(other.downloadSpeed, downloadSpeed) || other.downloadSpeed == downloadSpeed)&&(identical(other.uploadSpeed, uploadSpeed) || other.uploadSpeed == uploadSpeed));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,upload,download,start,metadata,const DeepCollectionEquality().hash(_chains),rule,rulePayload,downloadSpeed,uploadSpeed);
+    return Object.hash(runtimeType,id,upload,download,start,metadata,const DeepCollectionEquality().hash(_chains),rule,rulePayload,egressInterface,downloadSpeed,uploadSpeed);
 }
 
 @override
 String toString() {
-    return 'TrackerInfo(id: $id, upload: $upload, download: $download, start: $start, metadata: $metadata, chains: $chains, rule: $rule, rulePayload: $rulePayload, downloadSpeed: $downloadSpeed, uploadSpeed: $uploadSpeed)';
+    return 'TrackerInfo(id: $id, upload: $upload, download: $download, start: $start, metadata: $metadata, chains: $chains, rule: $rule, rulePayload: $rulePayload, egressInterface: $egressInterface, downloadSpeed: $downloadSpeed, uploadSpeed: $uploadSpeed)';
 }
 
 
@@ -1188,7 +1190,7 @@ abstract mixin class _$TrackerInfoCopyWith<$Res> implements $TrackerInfoCopyWith
   factory _$TrackerInfoCopyWith(_TrackerInfo value, $Res Function(_TrackerInfo) _then) = __$TrackerInfoCopyWithImpl;
 @override @useResult
 $Res call({
- String id, int upload, int download, DateTime start, Metadata metadata, List<String> chains, String rule, String rulePayload, int? downloadSpeed, int? uploadSpeed
+ String id, int upload, int download, DateTime start, Metadata metadata, List<String> chains, String rule, String rulePayload, String egressInterface, int? downloadSpeed, int? uploadSpeed
 });
 
 
@@ -1205,7 +1207,7 @@ class __$TrackerInfoCopyWithImpl<$Res>
 
 /// Create a copy of TrackerInfo
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? upload = null,Object? download = null,Object? start = null,Object? metadata = null,Object? chains = null,Object? rule = null,Object? rulePayload = null,Object? downloadSpeed = freezed,Object? uploadSpeed = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? upload = null,Object? download = null,Object? start = null,Object? metadata = null,Object? chains = null,Object? rule = null,Object? rulePayload = null,Object? egressInterface = null,Object? downloadSpeed = freezed,Object? uploadSpeed = freezed,}) {
   return _then(_TrackerInfo(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,upload: null == upload ? _self.upload : upload // ignore: cast_nullable_to_non_nullable
@@ -1215,6 +1217,7 @@ as DateTime,metadata: null == metadata ? _self.metadata : metadata // ignore: ca
 as Metadata,chains: null == chains ? _self._chains : chains // ignore: cast_nullable_to_non_nullable
 as List<String>,rule: null == rule ? _self.rule : rule // ignore: cast_nullable_to_non_nullable
 as String,rulePayload: null == rulePayload ? _self.rulePayload : rulePayload // ignore: cast_nullable_to_non_nullable
+as String,egressInterface: null == egressInterface ? _self.egressInterface : egressInterface // ignore: cast_nullable_to_non_nullable
 as String,downloadSpeed: freezed == downloadSpeed ? _self.downloadSpeed : downloadSpeed // ignore: cast_nullable_to_non_nullable
 as int?,uploadSpeed: freezed == uploadSpeed ? _self.uploadSpeed : uploadSpeed // ignore: cast_nullable_to_non_nullable
 as int?,
@@ -2065,7 +2068,7 @@ as bool,
 /// @nodoc
 mixin _$DnsQuery {
 
- String get domain; String get type;@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) DnsQueryInitiator? get initiator; String get upstream; bool get cached; List<String> get answers; String get rcode; String get error; int get delay; DateTime get time;
+ String get domain; String get type;@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) DnsQueryInitiator? get initiator; String get upstream; String get egressInterface; bool get cached; List<String> get answers; String get rcode; String get error; int get delay; DateTime get time;
 /// Create a copy of DnsQuery
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2079,20 +2082,20 @@ $DnsQueryCopyWith<DnsQuery> get copyWith => _$DnsQueryCopyWithImpl<DnsQuery>(thi
 @override
 bool operator ==(Object other) {
   final _this = this as DnsQuery;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DnsQuery&&(identical(other.domain, _this.domain) || other.domain == _this.domain)&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.initiator, _this.initiator) || other.initiator == _this.initiator)&&(identical(other.upstream, _this.upstream) || other.upstream == _this.upstream)&&(identical(other.cached, _this.cached) || other.cached == _this.cached)&&const DeepCollectionEquality().equals(other.answers, _this.answers)&&(identical(other.rcode, _this.rcode) || other.rcode == _this.rcode)&&(identical(other.error, _this.error) || other.error == _this.error)&&(identical(other.delay, _this.delay) || other.delay == _this.delay)&&(identical(other.time, _this.time) || other.time == _this.time));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DnsQuery&&(identical(other.domain, _this.domain) || other.domain == _this.domain)&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.initiator, _this.initiator) || other.initiator == _this.initiator)&&(identical(other.upstream, _this.upstream) || other.upstream == _this.upstream)&&(identical(other.egressInterface, _this.egressInterface) || other.egressInterface == _this.egressInterface)&&(identical(other.cached, _this.cached) || other.cached == _this.cached)&&const DeepCollectionEquality().equals(other.answers, _this.answers)&&(identical(other.rcode, _this.rcode) || other.rcode == _this.rcode)&&(identical(other.error, _this.error) || other.error == _this.error)&&(identical(other.delay, _this.delay) || other.delay == _this.delay)&&(identical(other.time, _this.time) || other.time == _this.time));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as DnsQuery;
-  return Object.hash(runtimeType,_this.domain,_this.type,_this.initiator,_this.upstream,_this.cached,const DeepCollectionEquality().hash(_this.answers),_this.rcode,_this.error,_this.delay,_this.time);
+  return Object.hash(runtimeType,_this.domain,_this.type,_this.initiator,_this.upstream,_this.egressInterface,_this.cached,const DeepCollectionEquality().hash(_this.answers),_this.rcode,_this.error,_this.delay,_this.time);
 }
 
 @override
 String toString() {
   final _this = this as DnsQuery;
-  return 'DnsQuery(domain: ${_this.domain}, type: ${_this.type}, initiator: ${_this.initiator}, upstream: ${_this.upstream}, cached: ${_this.cached}, answers: ${_this.answers}, rcode: ${_this.rcode}, error: ${_this.error}, delay: ${_this.delay}, time: ${_this.time})';
+  return 'DnsQuery(domain: ${_this.domain}, type: ${_this.type}, initiator: ${_this.initiator}, upstream: ${_this.upstream}, egressInterface: ${_this.egressInterface}, cached: ${_this.cached}, answers: ${_this.answers}, rcode: ${_this.rcode}, error: ${_this.error}, delay: ${_this.delay}, time: ${_this.time})';
 }
 
 
@@ -2103,7 +2106,7 @@ abstract mixin class $DnsQueryCopyWith<$Res>  {
   factory $DnsQueryCopyWith(DnsQuery value, $Res Function(DnsQuery) _then) = _$DnsQueryCopyWithImpl;
 @useResult
 $Res call({
- String domain, String type,@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) DnsQueryInitiator? initiator, String upstream, bool cached, List<String> answers, String rcode, String error, int delay, DateTime time
+ String domain, String type,@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) DnsQueryInitiator? initiator, String upstream, String egressInterface, bool cached, List<String> answers, String rcode, String error, int delay, DateTime time
 });
 
 
@@ -2120,12 +2123,13 @@ class _$DnsQueryCopyWithImpl<$Res>
 
 /// Create a copy of DnsQuery
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? domain = null,Object? type = null,Object? initiator = freezed,Object? upstream = null,Object? cached = null,Object? answers = null,Object? rcode = null,Object? error = null,Object? delay = null,Object? time = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? domain = null,Object? type = null,Object? initiator = freezed,Object? upstream = null,Object? egressInterface = null,Object? cached = null,Object? answers = null,Object? rcode = null,Object? error = null,Object? delay = null,Object? time = null,}) {
   return _then(DnsQuery(
 domain: null == domain ? _self.domain : domain // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,initiator: freezed == initiator ? _self.initiator : initiator // ignore: cast_nullable_to_non_nullable
 as DnsQueryInitiator?,upstream: null == upstream ? _self.upstream : upstream // ignore: cast_nullable_to_non_nullable
+as String,egressInterface: null == egressInterface ? _self.egressInterface : egressInterface // ignore: cast_nullable_to_non_nullable
 as String,cached: null == cached ? _self.cached : cached // ignore: cast_nullable_to_non_nullable
 as bool,answers: null == answers ? _self.answers : answers // ignore: cast_nullable_to_non_nullable
 as List<String>,rcode: null == rcode ? _self.rcode : rcode // ignore: cast_nullable_to_non_nullable
@@ -2217,10 +2221,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String domain,  String type, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  DnsQueryInitiator? initiator,  String upstream,  bool cached,  List<String> answers,  String rcode,  String error,  int delay,  DateTime time)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String domain,  String type, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  DnsQueryInitiator? initiator,  String upstream,  String egressInterface,  bool cached,  List<String> answers,  String rcode,  String error,  int delay,  DateTime time)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DnsQuery() when $default != null:
-return $default(_that.domain,_that.type,_that.initiator,_that.upstream,_that.cached,_that.answers,_that.rcode,_that.error,_that.delay,_that.time);case _:
+return $default(_that.domain,_that.type,_that.initiator,_that.upstream,_that.egressInterface,_that.cached,_that.answers,_that.rcode,_that.error,_that.delay,_that.time);case _:
   return orElse();
 
 }
@@ -2238,10 +2242,10 @@ return $default(_that.domain,_that.type,_that.initiator,_that.upstream,_that.cac
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String domain,  String type, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  DnsQueryInitiator? initiator,  String upstream,  bool cached,  List<String> answers,  String rcode,  String error,  int delay,  DateTime time)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String domain,  String type, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  DnsQueryInitiator? initiator,  String upstream,  String egressInterface,  bool cached,  List<String> answers,  String rcode,  String error,  int delay,  DateTime time)  $default,) {final _that = this;
 switch (_that) {
 case _DnsQuery():
-return $default(_that.domain,_that.type,_that.initiator,_that.upstream,_that.cached,_that.answers,_that.rcode,_that.error,_that.delay,_that.time);case _:
+return $default(_that.domain,_that.type,_that.initiator,_that.upstream,_that.egressInterface,_that.cached,_that.answers,_that.rcode,_that.error,_that.delay,_that.time);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2258,10 +2262,10 @@ return $default(_that.domain,_that.type,_that.initiator,_that.upstream,_that.cac
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String domain,  String type, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  DnsQueryInitiator? initiator,  String upstream,  bool cached,  List<String> answers,  String rcode,  String error,  int delay,  DateTime time)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String domain,  String type, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)  DnsQueryInitiator? initiator,  String upstream,  String egressInterface,  bool cached,  List<String> answers,  String rcode,  String error,  int delay,  DateTime time)?  $default,) {final _that = this;
 switch (_that) {
 case _DnsQuery() when $default != null:
-return $default(_that.domain,_that.type,_that.initiator,_that.upstream,_that.cached,_that.answers,_that.rcode,_that.error,_that.delay,_that.time);case _:
+return $default(_that.domain,_that.type,_that.initiator,_that.upstream,_that.egressInterface,_that.cached,_that.answers,_that.rcode,_that.error,_that.delay,_that.time);case _:
   return null;
 
 }
@@ -2273,13 +2277,14 @@ return $default(_that.domain,_that.type,_that.initiator,_that.upstream,_that.cac
 @JsonSerializable()
 
 class _DnsQuery implements DnsQuery {
-  const _DnsQuery({required this.domain, required this.type, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) this.initiator, this.upstream = '', this.cached = false,  List<String> answers = const [], this.rcode = '', this.error = '', this.delay = 0, required this.time}): _answers = answers;
+  const _DnsQuery({required this.domain, required this.type, @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) this.initiator, this.upstream = '', this.egressInterface = '', this.cached = false,  List<String> answers = const [], this.rcode = '', this.error = '', this.delay = 0, required this.time}): _answers = answers;
   factory _DnsQuery.fromJson(Map<String, dynamic> json) => _$DnsQueryFromJson(json);
 
 @override final  String domain;
 @override final  String type;
 @override@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) final  DnsQueryInitiator? initiator;
 @override@JsonKey() final  String upstream;
+@override@JsonKey() final  String egressInterface;
 @override@JsonKey() final  bool cached;
  final  List<String> _answers;
 @override@JsonKey() List<String> get answers {
@@ -2306,18 +2311,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DnsQuery&&(identical(other.domain, domain) || other.domain == domain)&&(identical(other.type, type) || other.type == type)&&(identical(other.initiator, initiator) || other.initiator == initiator)&&(identical(other.upstream, upstream) || other.upstream == upstream)&&(identical(other.cached, cached) || other.cached == cached)&&const DeepCollectionEquality().equals(other.answers, _answers)&&(identical(other.rcode, rcode) || other.rcode == rcode)&&(identical(other.error, error) || other.error == error)&&(identical(other.delay, delay) || other.delay == delay)&&(identical(other.time, time) || other.time == time));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DnsQuery&&(identical(other.domain, domain) || other.domain == domain)&&(identical(other.type, type) || other.type == type)&&(identical(other.initiator, initiator) || other.initiator == initiator)&&(identical(other.upstream, upstream) || other.upstream == upstream)&&(identical(other.egressInterface, egressInterface) || other.egressInterface == egressInterface)&&(identical(other.cached, cached) || other.cached == cached)&&const DeepCollectionEquality().equals(other.answers, _answers)&&(identical(other.rcode, rcode) || other.rcode == rcode)&&(identical(other.error, error) || other.error == error)&&(identical(other.delay, delay) || other.delay == delay)&&(identical(other.time, time) || other.time == time));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,domain,type,initiator,upstream,cached,const DeepCollectionEquality().hash(_answers),rcode,error,delay,time);
+    return Object.hash(runtimeType,domain,type,initiator,upstream,egressInterface,cached,const DeepCollectionEquality().hash(_answers),rcode,error,delay,time);
 }
 
 @override
 String toString() {
-    return 'DnsQuery(domain: $domain, type: $type, initiator: $initiator, upstream: $upstream, cached: $cached, answers: $answers, rcode: $rcode, error: $error, delay: $delay, time: $time)';
+    return 'DnsQuery(domain: $domain, type: $type, initiator: $initiator, upstream: $upstream, egressInterface: $egressInterface, cached: $cached, answers: $answers, rcode: $rcode, error: $error, delay: $delay, time: $time)';
 }
 
 
@@ -2328,7 +2333,7 @@ abstract mixin class _$DnsQueryCopyWith<$Res> implements $DnsQueryCopyWith<$Res>
   factory _$DnsQueryCopyWith(_DnsQuery value, $Res Function(_DnsQuery) _then) = __$DnsQueryCopyWithImpl;
 @override @useResult
 $Res call({
- String domain, String type,@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) DnsQueryInitiator? initiator, String upstream, bool cached, List<String> answers, String rcode, String error, int delay, DateTime time
+ String domain, String type,@JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue) DnsQueryInitiator? initiator, String upstream, String egressInterface, bool cached, List<String> answers, String rcode, String error, int delay, DateTime time
 });
 
 
@@ -2345,12 +2350,13 @@ class __$DnsQueryCopyWithImpl<$Res>
 
 /// Create a copy of DnsQuery
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? domain = null,Object? type = null,Object? initiator = freezed,Object? upstream = null,Object? cached = null,Object? answers = null,Object? rcode = null,Object? error = null,Object? delay = null,Object? time = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? domain = null,Object? type = null,Object? initiator = freezed,Object? upstream = null,Object? egressInterface = null,Object? cached = null,Object? answers = null,Object? rcode = null,Object? error = null,Object? delay = null,Object? time = null,}) {
   return _then(_DnsQuery(
 domain: null == domain ? _self.domain : domain // ignore: cast_nullable_to_non_nullable
 as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,initiator: freezed == initiator ? _self.initiator : initiator // ignore: cast_nullable_to_non_nullable
 as DnsQueryInitiator?,upstream: null == upstream ? _self.upstream : upstream // ignore: cast_nullable_to_non_nullable
+as String,egressInterface: null == egressInterface ? _self.egressInterface : egressInterface // ignore: cast_nullable_to_non_nullable
 as String,cached: null == cached ? _self.cached : cached // ignore: cast_nullable_to_non_nullable
 as bool,answers: null == answers ? _self._answers : answers // ignore: cast_nullable_to_non_nullable
 as List<String>,rcode: null == rcode ? _self.rcode : rcode // ignore: cast_nullable_to_non_nullable

@@ -6,11 +6,11 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/views/connection/requests.dart';
+import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:prism_ui/prism_ui.dart';
 
 import '../helpers/glyph_finders.dart';
 import '../helpers/scrollbar.dart';
@@ -26,6 +26,7 @@ TrackerInfo _tracker({
   String network = 'tcp',
   String process = 'curl',
   List<String> chains = const ['Proxy'],
+  String egressInterface = '',
   int download = 0,
 }) {
   return TrackerInfo(
@@ -40,6 +41,7 @@ TrackerInfo _tracker({
       process: process,
     ),
     chains: chains,
+    egressInterface: egressInterface,
     rule: 'DOMAIN',
     rulePayload: host,
   );
@@ -507,7 +509,7 @@ void main() {
 
     await pumpRequests(tester);
 
-    await tester.tap(find.widgetWithText(TonalChip, 'Tokyo'));
+    await tester.tap(find.widgetWithText(TrackerProxyChip, 'Tokyo'));
     await tester.pumpAndSettle();
 
     expect(find.textContaining('alpha.test'), findsNothing);
@@ -674,6 +676,38 @@ void main() {
     await teardownView(tester);
   });
 
+  testWidgets('the interfaces present pin as toggles and a tapped one '
+      'keeps only that interface', (tester) async {
+    seedRequests([
+      _tracker(id: 'a', host: 'alpha.test', egressInterface: 'Wi-Fi'),
+      _tracker(id: 'b', host: 'beta.test', egressInterface: 'iPhone USB'),
+    ]);
+
+    await pumpRequests(tester);
+    expect(find.widgetWithText(Chip, 'Wi-Fi'), findsOneWidget);
+    expect(find.widgetWithText(Chip, 'iPhone USB'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(Chip, 'Wi-Fi'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('alpha.test'), findsWidgets);
+    expect(find.textContaining('beta.test'), findsNothing);
+
+    await tester.tap(find.widgetWithText(Chip, 'Wi-Fi'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('beta.test'), findsWidgets);
+
+    await tester.tap(find.widgetWithText(RecordLabel, 'iPhone USB'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('alpha.test'), findsNothing);
+    expect(find.textContaining('beta.test'), findsWidgets);
+    expect(
+      tester.widget<Chip>(find.widgetWithText(Chip, 'iPhone USB')).selected,
+      isTrue,
+    );
+
+    await teardownView(tester);
+  });
+
   testWidgets('a wide page pins the offered values as toggles and adds a '
       'tapped exit as a removable chip', (tester) async {
     seedRequests([
@@ -698,7 +732,7 @@ void main() {
     expect(chip('UDP').selected, isFalse);
     expect(find.textContaining('alpha.test'), findsWidgets);
 
-    await tester.tap(find.widgetWithText(TonalChip, 'Tokyo'));
+    await tester.tap(find.widgetWithText(TrackerProxyChip, 'Tokyo'));
     await tester.pumpAndSettle();
     expect(chip('Tokyo').onDeleted, isNotNull);
     expect(find.textContaining('alpha.test'), findsNothing);

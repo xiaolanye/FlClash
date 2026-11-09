@@ -117,6 +117,7 @@ List<Object?> _shownInList(TrackerInfo trackerInfo) => [
   trackerInfo.chains,
   trackerInfo.rule,
   trackerInfo.rulePayload,
+  trackerInfo.egressInterface,
 ];
 
 /// Same rows as [TrackerInfoList], but diffed by connection id so closed

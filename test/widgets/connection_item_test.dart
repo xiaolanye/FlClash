@@ -20,6 +20,7 @@ TrackerInfo _tracker({
   String destinationPort = '',
   String host = '',
   List<String> chains = const [],
+  String egressInterface = '',
 }) {
   return TrackerInfo(
     id: '1',
@@ -35,6 +36,7 @@ TrackerInfo _tracker({
       host: host,
     ),
     chains: chains,
+    egressInterface: egressInterface,
     rule: rule,
     rulePayload: rulePayload,
   );
@@ -101,6 +103,33 @@ void main() {
     expect(find.textContaining('('), findsNothing);
     expect(find.text('tcp'), findsOneWidget);
     expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('TrackerInfoItem filters by the interface it shows', (
+    tester,
+  ) async {
+    final clicked = <RecordFilter>[];
+    await tester.pumpWidget(
+      TestApp(
+        wrapInProviderScope: true,
+        homeBuilder: (child) => HostScaffold(body: child),
+        child: RecordFilterScope(
+          onFilter: clicked.add,
+          child: TrackerInfoItem(
+            trackerInfo: _tracker(egressInterface: 'Wi-Fi'),
+            detailTitle: 'detail',
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.tap(find.widgetWithText(RecordLabel, 'Wi-Fi'));
+    await tester.pump();
+
+    expect(clicked, const [RecordFilter(RecordFacetKind.interface, 'Wi-Fi')]);
 
     await tester.pumpWidget(const SizedBox.shrink());
   });
