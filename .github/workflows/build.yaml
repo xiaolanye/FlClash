@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - '**'
+      # This fork's custom DMG branch was running the whole matrix on every
+      # push, including a macOS runner, and GitHub stopped the fork for usage.
+      - '!feature/macos-egress'
     tags:
       - 'v*'
   workflow_dispatch:

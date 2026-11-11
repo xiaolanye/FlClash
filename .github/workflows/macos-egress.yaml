@@ -3,13 +3,16 @@ name: macOS Apple Silicon custom build
 on:
   push:
     branches: [feature/macos-egress]
+    # A macOS minute costs ten Linux minutes. Rebuild the DMG for the core
+    # and for this file; start it by hand for interface-only edits.
     paths:
       - '.github/workflows/macos-egress.yaml'
       - 'core/**'
-      - 'lib/**'
-      - 'plugins/tray/**'
-      - 'test/**'
   workflow_dispatch:
+
+concurrency:
+  group: macos-egress
+  cancel-in-progress: true
 
 permissions:
   contents: read

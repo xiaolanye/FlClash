@@ -360,7 +360,9 @@ for `:common`, `:service` and `:app`, with the Flutter compile tasks excluded
 and the gomobile AAR built for one ABI), `rust` (both crates), and a
 Windows runner for the helper's `windows-service` feature. On branch pushes a
 `desktop` job also compiles a debug build per desktop platform; a tag skips it,
-since its release matrix compiles the same native code. Release builds run only
+since its release matrix compiles the same native code. `feature/macos-egress`
+is left out of that matrix. Its Apple Silicon DMG runs when `core/` or
+`.github/workflows/macos-egress.yaml` changes, and can be started by hand. Release builds run only
 in the public repository and start alongside the checks; `upload` publishes
 only once every build and every check job passes.
 
