@@ -1,0 +1,79 @@
+name: Windows egress package
+
+on:
+  push:
+    branches: [cursor/windows-egress-460a]
+    paths:
+      - '.github/workflows/windows-egress.yaml'
+      - 'core/**'
+  workflow_dispatch:
+
+concurrency:
+  group: windows-egress
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.repository == 'xiaolanye/FlClash' && github.ref == 'refs/heads/cursor/windows-egress-460a'
+    runs-on: windows-2022
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.1'
+          cache-dependency-path: core/go.sum
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.6'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enable git long paths
+        run: git config --global core.longpaths true
+      - name: Prepare the core
+        run: |
+          python core/patches/macos-egress.py
+          git -C core/Clash.Meta diff --check
+          gofmt -w core/dns_query.go
+          bundle=core/Clash.Meta/component/ca/ca-certificates.crt
+          curl -fsSL --retry 3 -o "$bundle" https://curl.se/ca/cacert-2026-09-25.pem
+          echo "a41b5d356aea97a529fe27e0f7316d2f9d946d75927476cf9cf1b90637d00505  $bundle" | sha256sum -c -
+      - name: Verify Go and Flutter
+        run: |
+          # Path and file-lock cases in this suite already fail on Windows. Linux runs them; here the patched core only has to compile.
+          (cd core && CGO_ENABLED=0 go test -c -o "$RUNNER_TEMP/core.test.exe" .)
+          flutter pub get
+          dart run build_runner build --delete-conflicting-outputs
+          flutter analyze --no-fatal-infos
+          flutter test test/models test/core/protocol_contract_test.dart \
+            test/widgets/tracker_info_mitm_host_test.dart \
+            test/views/dashboard/connections_table_test.dart test/views/dns_queries_view_test.dart
+      - name: Build the Windows packages
+        run: |
+          dart setup.dart windows --env stable -v
+          mkdir -p verified-package
+          find dist -type f \( -name '*.exe' -o -name '*.zip' \) -exec cp {} verified-package/ \;
+          test -n "$(find verified-package -type f -print -quit)"
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          for path in sorted(Path('verified-package').iterdir()):
+              digest = hashlib.sha256(path.read_bytes()).hexdigest()
+              print(f'{digest}  {path.name}')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FlClash-Windows-amd64-egress
+          path: verified-package/*
+          if-no-files-found: error
