@@ -196,10 +196,7 @@ add('component/egress/interface_windows.go', '''//go:build windows
 
 package egress
 
-import (
-    "encoding/binary"
-    "syscall"
-)
+import "syscall"
 
 const (
     ipUnicastIf   = 31
@@ -210,24 +207,15 @@ func boundInterface(raw syscall.RawConn) int {
     var index int
     _ = raw.Control(func(fd uintptr) {
         handle := syscall.Handle(fd)
-        if value, err := syscall.GetsockoptInt(handle, syscall.IPPROTO_IP, ipUnicastIf); err == nil {
-            if decoded := ipv4InterfaceIndex(value); decoded > 0 {
-                index = decoded
-                return
-            }
+        if value, err := syscall.GetsockoptInt(handle, syscall.IPPROTO_IP, ipUnicastIf); err == nil && value > 0 {
+            index = value
+            return
         }
         if value, err := syscall.GetsockoptInt(handle, syscall.IPPROTO_IPV6, ipv6UnicastIf); err == nil && value > 0 {
             index = value
         }
     })
     return index
-}
-
-func ipv4InterfaceIndex(value int) int {
-    // Windows stores IP_UNICAST_IF in network byte order. bind_windows.go writes it the same way.
-    var encoded [4]byte
-    binary.NativeEndian.PutUint32(encoded[:], uint32(value))
-    return int(binary.BigEndian.Uint32(encoded[:]))
 }
 
 func interfaceLabel(device string) string { return device }
