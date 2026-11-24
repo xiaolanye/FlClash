@@ -192,7 +192,36 @@ func hardwarePorts(output string) map[string]string {
 }
 ''')
 
-add('component/egress/interface_other.go', '''//go:build !darwin
+add('component/egress/interface_windows.go', '''//go:build windows
+
+package egress
+
+import "syscall"
+
+const (
+    ipUnicastIf   = 31
+    ipv6UnicastIf = 31
+)
+
+func boundInterface(raw syscall.RawConn) int {
+    var index int
+    _ = raw.Control(func(fd uintptr) {
+        handle := syscall.Handle(fd)
+        if value, err := syscall.GetsockoptInt(handle, syscall.IPPROTO_IP, ipUnicastIf); err == nil && value > 0 {
+            index = value
+            return
+        }
+        if value, err := syscall.GetsockoptInt(handle, syscall.IPPROTO_IPV6, ipv6UnicastIf); err == nil && value > 0 {
+            index = value
+        }
+    })
+    return index
+}
+
+func interfaceLabel(device string) string { return device }
+''')
+
+add('component/egress/interface_other.go', '''//go:build !darwin && !windows
 
 package egress
 
